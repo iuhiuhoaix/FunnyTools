@@ -7,7 +7,7 @@ A collection of productivity skills (plugins) for Claude Code. Install once, get
 ### Plugin Install (Recommended)
 
 ```bash
-/plugin install https://github.com/<your-org>/FunnyTools.git
+/plugin install https://github.com/iuhiuhoaix/FunnyTools.git
 ```
 
 ### Manual: Copy to Project
