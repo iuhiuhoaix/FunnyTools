@@ -401,7 +401,9 @@ function renderBlocks(blocks, footnotes, isRoot) {
 
       case BlockType.CODE_FENCE: {
         const langClass = block.lang ? ' class="language-' + escapeHtml(block.lang) + '"' : '';
-        html.push('<pre><code' + langClass + '>' + escapeHtml(block.code) + '</code></pre>');
+        // Don't escape HTML entities in mermaid blocks - mermaid.js needs raw content
+        const codeContent = block.lang === 'mermaid' ? block.code : escapeHtml(block.code);
+        html.push('<pre><code' + langClass + '>' + codeContent + '</code></pre>');
         break;
       }
 

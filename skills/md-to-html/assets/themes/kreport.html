@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+
+    <!-- Prism.js 代码高亮 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #333;
+            background: #f5f6fa;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-top: 2em;
+            margin-bottom: 0.8em;
+        }
+
+        h1 {
+            font-size: 2em;
+            text-align: center;
+            margin-top: 1em;
+            padding-bottom: 0.5em;
+            border-bottom: 3px solid #2B7FE0;
+            color: #2B7FE0;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            padding-bottom: 0.3em;
+            border-bottom: 2px solid #e8e8e8;
+            color: #2B7FE0;
+        }
+
+        h3 { font-size: 1.15em; color: #444; }
+        h4 { font-size: 1em; color: #555; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.9em; }
+
+        p { margin-top: 0; margin-bottom: 1em; }
+
+        a { color: #2B7FE0; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        strong { font-weight: 700; }
+
+        img { max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.85em;
+            padding: 0.15em 0.4em;
+            background: #eef1f7;
+            border-radius: 3px;
+            color: #2B7FE0;
+        }
+
+        pre {
+            padding: 1.2em;
+            overflow: auto;
+            font-size: 0.85em;
+            line-height: 1.6;
+            background: #282c34;
+            color: #abb2bf;
+            border-radius: 6px;
+            margin-bottom: 1.5em;
+        }
+
+        pre code {
+            display: inline;
+            padding: 0;
+            background: transparent;
+            color: inherit;
+        }
+
+        blockquote {
+            margin: 1.5em 0;
+            padding: 1em 1.5em;
+            border-left: 4px solid #2B7FE0;
+            background: #f0f2f8;
+            color: #555;
+            border-radius: 0 4px 4px 0;
+        }
+
+        blockquote > :first-child { margin-top: 0; }
+        blockquote > :last-child { margin-bottom: 0; }
+
+        ul, ol { padding-left: 2em; margin-bottom: 1em; }
+        li { margin-bottom: 0.3em; }
+
+        .task-list { list-style-type: none; padding-left: 0; }
+        .task-list-item { display: flex; align-items: flex-start; gap: 0.5em; }
+        .task-list-item input[type="checkbox"] { margin-top: 0.3em; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5em;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        table th, table td {
+            padding: 0.7em 1em;
+            border-bottom: 1px solid #e8e8e8;
+            text-align: left;
+        }
+
+        table th {
+            font-weight: 600;
+            background: #2B7FE0;
+            color: #fff;
+        }
+
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f8f9fd; }
+
+        hr {
+            border: none;
+            border-top: 2px solid #e8e8e8;
+            margin: 2em 0;
+        }
+
+        .footnotes {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 3em;
+            padding-top: 1em;
+            border-top: 1px solid #e8e8e8;
+        }
+
+        .footnotes ol { padding-left: 1.5em; }
+        .footnotes a { color: #2B7FE0; }
+
+        @media print {
+            body { background: #fff; max-width: none; padding: 0; font-size: 11pt; }
+            pre { background: #f5f5f5; color: #333; border: 1px solid #ddd; }
+            table th { background: #f0f0f0; color: #333; }
+            h1 { border-bottom-width: 2px; }
+        }
+
+        /* Mermaid diagram styles */
+        .mermaid {
+            background: #fff;
+            border-radius: 6px;
+            padding: 1.5em;
+            margin-bottom: 1.5em;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            overflow-x: auto;
+            text-align: center;
+        }
+
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <article class="markdown-body">
+        {{content}}
+    </article>
+
+    <!-- Prism.js 代码高亮 -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-sql.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-css.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-markup.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+    <script>
+        // 高亮所有代码块
+        Prism.highlightAll();
+    </script>
+
+    <script>
+        // Show error if mermaid fails to load
+        function showMermaidError() {
+            document.querySelectorAll('code.language-mermaid').forEach(function(block) {
+                var pre = block.parentElement;
+                var errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'background:#fff3cd;border:1px solid #ffc107;padding:12px;border-radius:4px;margin:10px 0;color:#856404;font-size:14px;';
+                errorDiv.innerHTML = '⚠️ Mermaid 加载失败，请检查网络连接或使用 VPN';
+                pre.parentElement.insertBefore(errorDiv, pre);
+            });
+        }
+
+        // First, wrap mermaid code blocks in containers
+        document.querySelectorAll('code.language-mermaid').forEach(function(block) {
+            var container = document.createElement('div');
+            container.className = 'mermaid';
+            var pre = block.parentElement;
+            pre.parentElement.insertBefore(container, pre);
+            container.textContent = block.textContent;
+            pre.remove();
+        });
+
+        // Load mermaid with fallback CDNs
+        var cdns = [
+            'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js',
+            'https://unpkg.com/mermaid@10/dist/mermaid.min.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.0.0/mermaid.min.js'
+        ];
+
+        function loadMermaid(index) {
+            if (index >= cdns.length) {
+                showMermaidError();
+                return;
+            }
+
+            var script = document.createElement('script');
+            script.src = cdns[index];
+            script.onload = function() {
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: 'base',
+                    themeVariables: {
+                        // 金蝶蓝主色
+                        primaryColor: '#2B7FE0',
+                        primaryTextColor: '#fff',
+                        primaryBorderColor: '#1a6bc4',
+
+                        // 次要色（浅蓝背景）
+                        secondaryColor: '#e8f2fc',
+                        tertiaryColor: '#f5f9fe',
+
+                        // 线条
+                        lineColor: '#2B7FE0',
+                        edgeLabelBackground: '#fff',
+
+                        // 节点文本 - 白色
+                        nodeTextColor: '#fff',
+
+                        // 背景
+                        background: '#fff',
+                        mainBkg: '#2B7FE0',
+                        nodeBorder: '#1a6bc4',
+
+                        // 信道/激活色
+                        activationBkgColor: '#e8f2fc',
+                        activationBorderColor: '#2B7FE0',
+
+                        // 序列图
+                        actorBkg: '#2B7FE0',
+                        actorBorder: '#1a6bc4',
+                        actorTextColor: '#fff',
+                        signalColor: '#333',
+                        signalTextColor: '#333',
+
+                        // 流程图
+                        fillType0: '#2B7FE0',
+                        fillType1: '#4a9af5',
+                        fillType2: '#e8f2fc'
+                    },
+                    flowchart: {
+                        useMaxWidth: true,
+                        htmlLabels: true,
+                        curve: 'basis',
+                        nodeSpacing: 50,
+                        rankSpacing: 60
+                    },
+                    sequence: {
+                        useMaxWidth: true,
+                        actorMargin: 50
+                    },
+                    securityLevel: 'loose',
+                    // 圆角小一些
+                    fontSize: 14
+                });
+
+                // 自定义样式：小圆角 + 粗线条
+                var style = document.createElement('style');
+                style.textContent = `
+                    .mermaid .node rect,
+                    .mermaid .node polygon,
+                    .mermaid .node circle {
+                        rx: 3;
+                        ry: 3;
+                    }
+                    .mermaid .edgePath path {
+                        stroke-width: 2.5px;
+                    }
+                    .mermaid .edgeLabel {
+                        font-size: 13px;
+                        background-color: #fff;
+                    }
+                    .mermaid .nodeLabel {
+                        font-size: 14px;
+                        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+                    }
+                `;
+                document.head.appendChild(style);
+
+                mermaid.run();
+                console.log('Mermaid loaded from: ' + cdns[index]);
+            };
+            script.onerror = function() {
+                console.warn('CDN failed: ' + cdns[index] + ', trying next...');
+                loadMermaid(index + 1);
+            };
+            document.body.appendChild(script);
+        }
+
+        loadMermaid(0);
+    </script>
+</body>
+</html>
