@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
 
-    <!-- Prism.js 代码高亮 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
+    <!-- Prism.js 代码高亮 (本地) -->
+    <link rel="stylesheet" href="../vendor/prism/prism-tomorrow.min.css">
     <style>
         * { box-sizing: border-box; }
 
@@ -173,15 +173,15 @@
         {{content}}
     </article>
 
-    <!-- Prism.js 代码高亮 -->
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-sql.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-css.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-markup.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+    <!-- Prism.js 代码高亮 (本地) -->
+    <script src="../vendor/prism/prism.min.js"></script>
+    <script src="../vendor/prism/prism-javascript.min.js"></script>
+    <script src="../vendor/prism/prism-python.min.js"></script>
+    <script src="../vendor/prism/prism-sql.min.js"></script>
+    <script src="../vendor/prism/prism-css.min.js"></script>
+    <script src="../vendor/prism/prism-markup.min.js"></script>
+    <script src="../vendor/prism/prism-json.min.js"></script>
+    <script src="../vendor/prism/prism-bash.min.js"></script>
     <script>
         // 高亮所有代码块
         Prism.highlightAll();
@@ -209,26 +209,14 @@
             pre.remove();
         });
 
-        // Load mermaid with fallback CDNs
-        var cdns = [
-            'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js',
-            'https://unpkg.com/mermaid@10/dist/mermaid.min.js',
-            'https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.0.0/mermaid.min.js'
-        ];
-
-        function loadMermaid(index) {
-            if (index >= cdns.length) {
-                showMermaidError();
-                return;
-            }
-
-            var script = document.createElement('script');
-            script.src = cdns[index];
-            script.onload = function() {
-                mermaid.initialize({
-                    startOnLoad: false,
-                    theme: 'base',
-                    themeVariables: {
+        // Load mermaid (本地)
+        var script = document.createElement('script');
+        script.src = '../vendor/mermaid/mermaid.min.js';
+        script.onload = function() {
+            mermaid.initialize({
+                startOnLoad: false,
+                theme: 'base',
+                themeVariables: {
                         // 金蝶蓝主色
                         primaryColor: '#2B7FE0',
                         primaryTextColor: '#fff',
@@ -306,16 +294,12 @@
                 document.head.appendChild(style);
 
                 mermaid.run();
-                console.log('Mermaid loaded from: ' + cdns[index]);
+                console.log('Mermaid loaded successfully');
             };
             script.onerror = function() {
-                console.warn('CDN failed: ' + cdns[index] + ', trying next...');
-                loadMermaid(index + 1);
+                showMermaidError();
             };
             document.body.appendChild(script);
-        }
-
-        loadMermaid(0);
     </script>
 </body>
 </html>
