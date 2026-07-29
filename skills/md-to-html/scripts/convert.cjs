@@ -16,6 +16,7 @@ function parseArgs(argv) {
     listThemes: false,
     help: false,
     cdn: false,
+    embed: false,
   };
   for (let i = 0; i < argv.length; i++) {
     switch (argv[i]) {
@@ -27,6 +28,7 @@ function parseArgs(argv) {
       case '--list-themes': args.listThemes = true; break;
       case '--help': case '-h': args.help = true; break;
       case '--cdn': args.cdn = true; break;
+      case '--embed': args.embed = true; break;
       default:
         if (!args.input && !argv[i].startsWith('-')) args.input = argv[i];
     }
@@ -44,6 +46,7 @@ Options:
   --title <title>       Page title (default: extracted from first H1)
   --stdin               Read markdown from stdin
   --cdn                 Use CDN for Prism.js and mermaid.js (for sharing)
+  --embed               Embed local images as base64 in HTML (self-contained)
   --list-themes         List available built-in themes
   --help, -h            Show this help`);
 }
@@ -56,6 +59,45 @@ function escapeHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+// ── Image to Base64 ───────────────────────────────────────────────────────────
+
+function imageToBase64(imagePath, inputDir) {
+  const path = require('path');
+  const fs = require('fs');
+
+  // Resolve relative path based on input file directory
+  const resolvedPath = path.resolve(inputDir, imagePath);
+
+  if (!fs.existsSync(resolvedPath)) {
+    console.warn('Warning: Image not found: ' + resolvedPath);
+    return null;
+  }
+
+  try {
+    const imageBuffer = fs.readFileSync(resolvedPath);
+    const base64 = imageBuffer.toString('base64');
+
+    // Determine MIME type from extension
+    const ext = path.extname(resolvedPath).toLowerCase();
+    const mimeTypes = {
+      '.png': 'image/png',
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.gif': 'image/gif',
+      '.svg': 'image/svg+xml',
+      '.webp': 'image/webp',
+      '.bmp': 'image/bmp',
+      '.ico': 'image/x-icon'
+    };
+
+    const mimeType = mimeTypes[ext] || 'image/png';
+    return 'data:' + mimeType + ';base64,' + base64;
+  } catch (err) {
+    console.warn('Warning: Failed to read image: ' + resolvedPath + ' - ' + err.message);
+    return null;
+  }
 }
 
 // ── Slug Generation ───────────────────────────────────────────────────────────
@@ -71,7 +113,7 @@ function slugify(text) {
 
 // ── Inline Parsing ────────────────────────────────────────────────────────────
 
-function parseInline(text) {
+function parseInline(text, options = {}) {
   // Process in stages using placeholder replacement to avoid nested match issues
 
   // 1. Extract and protect inline code spans first (they should not be parsed further)
@@ -86,8 +128,18 @@ function parseInline(text) {
   const imgSpans = [];
   text = text.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, (_, alt, url, title) => {
     const t = title ? ' title="' + escapeHtml(title) + '"' : '';
+
+    // If --embed flag is used and URL is local (not http/https), convert to base64
+    let finalUrl = url;
+    if (options.embed && options.inputDir && !url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('data:')) {
+      const base64Url = imageToBase64(url, options.inputDir);
+      if (base64Url) {
+        finalUrl = base64Url;
+      }
+    }
+
     const idx = imgSpans.length;
-    imgSpans.push('<img src="' + escapeHtml(url) + '" alt="' + escapeHtml(alt) + '"' + t + '>');
+    imgSpans.push('<img src="' + escapeHtml(finalUrl) + '" alt="' + escapeHtml(alt) + '"' + t + '>');
     return '\x00IMG' + idx + '\x00';
   });
 
@@ -386,7 +438,7 @@ function parseTable(tableLines) {
 
 // ── Block Rendering ───────────────────────────────────────────────────────────
 
-function renderBlocks(blocks, footnotes, isRoot) {
+function renderBlocks(blocks, footnotes, isRoot, options = {}) {
   const html = [];
 
   for (const block of blocks) {
@@ -397,7 +449,7 @@ function renderBlocks(blocks, footnotes, isRoot) {
 
       case BlockType.HEADING: {
         const id = slugify(block.text);
-        const inner = parseInline(block.text);
+        const inner = parseInline(block.text, options);
         html.push('<h' + block.level + ' id="' + id + '">' + inner + '</h' + block.level + '>');
         break;
       }
@@ -415,7 +467,7 @@ function renderBlocks(blocks, footnotes, isRoot) {
         break;
 
       case BlockType.BLOCKQUOTE: {
-        const inner = renderBlocks(block.children, footnotes, false);
+        const inner = renderBlocks(block.children, footnotes, false, options);
         html.push('<blockquote>\n' + inner + '\n</blockquote>');
         break;
       }
@@ -426,9 +478,9 @@ function renderBlocks(blocks, footnotes, isRoot) {
         const listHtml = block.items.map(it => {
           if (it.task) {
             const checked = it.checked ? ' checked' : '';
-            return '  <li class="task-list-item"><input type="checkbox"' + checked + ' disabled> ' + parseInline(it.text) + '</li>';
+            return '  <li class="task-list-item"><input type="checkbox"' + checked + ' disabled> ' + parseInline(it.text, options) + '</li>';
           }
-          return '  <li>' + parseInline(it.text) + '</li>';
+          return '  <li>' + parseInline(it.text, options) + '</li>';
         }).join('\n');
         html.push('<ul' + cls + '>\n' + listHtml + '\n</ul>');
         break;
@@ -436,7 +488,7 @@ function renderBlocks(blocks, footnotes, isRoot) {
 
       case BlockType.OL: {
         const listHtml = block.items.map(it =>
-          '  <li>' + parseInline(it.text) + '</li>'
+          '  <li>' + parseInline(it.text, options) + '</li>'
         ).join('\n');
         html.push('<ol>\n' + listHtml + '\n</ol>');
         break;
@@ -445,13 +497,13 @@ function renderBlocks(blocks, footnotes, isRoot) {
       case BlockType.TABLE: {
         const ths = block.headers.map((h, idx) => {
           const align = block.alignments[idx] && block.alignments[idx] !== 'left' ? ' style="text-align:' + block.alignments[idx] + '"' : '';
-          return '    <th' + align + '>' + parseInline(h) + '</th>';
+          return '    <th' + align + '>' + parseInline(h, options) + '</th>';
         }).join('\n');
 
         const trs = block.rows.map(row => {
           const tds = row.map((cell, idx) => {
             const align = block.alignments[idx] && block.alignments[idx] !== 'left' ? ' style="text-align:' + block.alignments[idx] + '"' : '';
-            return '    <td' + align + '>' + parseInline(cell) + '</td>';
+            return '    <td' + align + '>' + parseInline(cell, options) + '</td>';
           }).join('\n');
           return '  <tr>\n' + tds + '\n  </tr>';
         }).join('\n');
@@ -465,7 +517,7 @@ function renderBlocks(blocks, footnotes, isRoot) {
         break;
 
       case BlockType.PARAGRAPH:
-        html.push('<p>' + parseInline(block.text) + '</p>');
+        html.push('<p>' + parseInline(block.text, options) + '</p>');
         break;
     }
   }
@@ -576,7 +628,14 @@ function main() {
 
   // Parse markdown
   const { blocks, footnotes } = parseBlocks(md);
-  const bodyHtml = renderBlocks(blocks, footnotes, true);
+
+  // Prepare options for parseInline (for --embed flag)
+  const parseOptions = {
+    embed: args.embed,
+    inputDir: args.input ? path.dirname(path.resolve(args.input)) : null
+  };
+
+  const bodyHtml = renderBlocks(blocks, footnotes, true, parseOptions);
 
   // Extract title
   const title = args.title || extractTitle(md, args.input);
