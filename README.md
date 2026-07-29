@@ -31,6 +31,12 @@ cp -r FunnyTools/skills/* /path/to/your-project/.claude/skills/
 
 Each skill is auto-discovered by Claude Code — no registration needed.
 
+## Documentation
+
+- [CHANGELOG.md](CHANGELOG.md) - Version history and release notes
+- [RELEASING.md](RELEASING.md) - How to create new releases
+- [PROMPT.md](PROMPT.md) - Development prompt template for new Claude Code sessions
+
 ## License
 
 MIT

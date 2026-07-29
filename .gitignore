@@ -3,3 +3,4 @@ node_modules/
 !skills/md-to-html/assets/themes/*.html
 .DS_Store
 Thumbs.db
+tmp/
