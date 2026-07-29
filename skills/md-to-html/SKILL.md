@@ -24,15 +24,21 @@ Convert Markdown files to styled HTML using the embedded Node.js converter with 
 | `--output, -o` | Output HTML file | `<input>.html` |
 | `--title` | Page title | First H1 or filename |
 | `--stdin` | Read from stdin | false |
+| `--cdn` | Use CDN for JS/CSS libraries (for sharing) | false |
+| `--embed` | Embed local images as base64 in HTML | false |
 | `--list-themes` | Show available themes | - |
 
-**Built-in themes:** `github`, `minimal`, `academic`, `report`, `dark`
+**Built-in themes:** `github`, `minimal`, `academic`, `report`, `dark`, `kreport`, `kdesign`
 
 ## Conversion Workflow
 
 1. **Determine input**: Identify the markdown file or inline content to convert
 2. **Choose theme**: If user specified a style, use it. Otherwise default to `github`. Ask only if the context suggests a specific style would be appropriate (e.g. a report -> `report`, code docs -> `github`)
-3. **Run conversion script**:
+3. **Determine options**:
+   - Use `--cdn` if sharing HTML with others (loads JS/CSS from BootCDN)
+   - Use `--embed` if markdown contains local images (embeds as base64)
+   - Combine both for fully self-contained shareable files: `--cdn --embed`
+4. **Run conversion script**:
 
 ```bash
 # File conversion with default theme
@@ -40,6 +46,9 @@ node "${CLAUDE_PLUGIN_ROOT}/skills/md-to-html/scripts/convert.cjs" --input <file
 
 # With specific theme
 node "${CLAUDE_PLUGIN_ROOT}/skills/md-to-html/scripts/convert.cjs" --input <file.md> --theme dark
+
+# For sharing: use CDN + embed images
+node "${CLAUDE_PLUGIN_ROOT}/skills/md-to-html/scripts/convert.cjs" --input <file.md> --theme kdesign --cdn --embed
 
 # Custom output path and title
 node "${CLAUDE_PLUGIN_ROOT}/skills/md-to-html/scripts/convert.cjs" --input <file.md> --theme report --output report.html --title "Report Title"
@@ -59,6 +68,13 @@ echo "# Hello" | node "${CLAUDE_PLUGIN_ROOT}/skills/md-to-html/scripts/convert.c
 | `academic` | Papers, research documents, formal writing |
 | `report` | Business documents, reports, professional content |
 | `dark` | Dark mode preference, presentations, screen sharing |
+| `kreport` | Kingdee-style reports with blue color scheme, mermaid support |
+| `kdesign` | KDesign system style, modern enterprise UI, code highlighting |
+
+**Special features by theme:**
+- `kreport` and `kdesign`: Include Prism.js (code highlighting) and Mermaid.js (flowcharts/sequence diagrams)
+- Use `--cdn` flag with these themes for shareable files (loads libraries from BootCDN)
+- Use `--embed` flag to embed local images as base64
 
 ## Custom Themes
 
@@ -78,6 +94,48 @@ Convert multiple files at once:
 for f in docs/*.md; do
   node "${CLAUDE_PLUGIN_ROOT}/skills/md-to-html/scripts/convert.cjs" --input "$f" --theme github
 done
+```
+
+## Sharing HTML Files
+
+### Option 1: CDN Mode (Recommended for sharing)
+Use `--cdn` to load JS/CSS libraries from BootCDN (optimized for China network):
+```bash
+node convert.cjs --input file.md --theme kdesign --cdn
+```
+- ✅ Single HTML file
+- ✅ No external dependencies
+- ⚠️ Requires internet to load code highlighting and mermaid diagrams
+
+### Option 2: Embed Images (Self-contained)
+Use `--embed` to convert local images to base64:
+```bash
+node convert.cjs --input file.md --theme kdesign --embed
+```
+- ✅ Images embedded in HTML
+- ✅ No need to send image files separately
+- ⚠️ File size increases ~33% per image
+
+### Option 3: Full Self-contained (Best for sharing)
+Combine both flags for maximum portability:
+```bash
+node convert.cjs --input file.md --theme kdesign --cdn --embed
+```
+- ✅ Single HTML file
+- ✅ Images embedded
+- ✅ Libraries loaded from CDN
+- ✅ Works offline for basic viewing (images show)
+- ⚠️ Code highlighting and diagrams require internet
+
+### Option 4: Offline Package
+For fully offline use, send HTML + vendor directory:
+```bash
+# Generate HTML with local paths
+node convert.cjs --input file.md --theme kdesign
+
+# Send to colleague:
+# - output.html
+# - skills/md-to-html/assets/vendor/ (directory)
 ```
 
 ## Troubleshooting
