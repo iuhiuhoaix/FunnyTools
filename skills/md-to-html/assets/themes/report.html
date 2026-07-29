@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #333;
+            background: #f5f6fa;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-top: 2em;
+            margin-bottom: 0.8em;
+        }
+
+        h1 {
+            font-size: 2em;
+            text-align: center;
+            margin-top: 1em;
+            padding-bottom: 0.5em;
+            border-bottom: 3px solid #2c3e8f;
+            color: #2c3e8f;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            padding-bottom: 0.3em;
+            border-bottom: 2px solid #e8e8e8;
+            color: #2c3e8f;
+        }
+
+        h3 { font-size: 1.15em; color: #444; }
+        h4 { font-size: 1em; color: #555; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.9em; }
+
+        p { margin-top: 0; margin-bottom: 1em; }
+
+        a { color: #2c3e8f; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        strong { font-weight: 700; }
+
+        img { max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.85em;
+            padding: 0.15em 0.4em;
+            background: #eef1f7;
+            border-radius: 3px;
+            color: #2c3e8f;
+        }
+
+        pre {
+            padding: 1.2em;
+            overflow: auto;
+            font-size: 0.85em;
+            line-height: 1.6;
+            background: #282c34;
+            color: #abb2bf;
+            border-radius: 6px;
+            margin-bottom: 1.5em;
+        }
+
+        pre code {
+            display: inline;
+            padding: 0;
+            background: transparent;
+            color: inherit;
+        }
+
+        blockquote {
+            margin: 1.5em 0;
+            padding: 1em 1.5em;
+            border-left: 4px solid #2c3e8f;
+            background: #f0f2f8;
+            color: #555;
+            border-radius: 0 4px 4px 0;
+        }
+
+        blockquote > :first-child { margin-top: 0; }
+        blockquote > :last-child { margin-bottom: 0; }
+
+        ul, ol { padding-left: 2em; margin-bottom: 1em; }
+        li { margin-bottom: 0.3em; }
+
+        .task-list { list-style-type: none; padding-left: 0; }
+        .task-list-item { display: flex; align-items: flex-start; gap: 0.5em; }
+        .task-list-item input[type="checkbox"] { margin-top: 0.3em; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5em;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        table th, table td {
+            padding: 0.7em 1em;
+            border-bottom: 1px solid #e8e8e8;
+            text-align: left;
+        }
+
+        table th {
+            font-weight: 600;
+            background: #2c3e8f;
+            color: #fff;
+        }
+
+        table tr:last-child td { border-bottom: none; }
+        table tr:hover { background: #f8f9fd; }
+
+        hr {
+            border: none;
+            border-top: 2px solid #e8e8e8;
+            margin: 2em 0;
+        }
+
+        .footnotes {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 3em;
+            padding-top: 1em;
+            border-top: 1px solid #e8e8e8;
+        }
+
+        .footnotes ol { padding-left: 1.5em; }
+        .footnotes a { color: #2c3e8f; }
+
+        @media print {
+            body { background: #fff; max-width: none; padding: 0; font-size: 11pt; }
+            pre { background: #f5f5f5; color: #333; border: 1px solid #ddd; }
+            table th { background: #f0f0f0; color: #333; }
+            h1 { border-bottom-width: 2px; }
+        }
+    </style>
+</head>
+<body>
+    <article class="markdown-body">
+        {{content}}
+    </article>
+</body>
+</html>

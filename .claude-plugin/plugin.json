@@ -1,0 +1,17 @@
+{
+  "name": "funny-tools",
+  "description": "A collection of productivity skills for Claude Code — Markdown to HTML conversion, document generation, and more",
+  "version": "1.0.0",
+  "author": {
+    "name": "FunnyTools contributors"
+  },
+  "license": "MIT",
+  "keywords": [
+    "tools",
+    "skills",
+    "productivity",
+    "markdown",
+    "html",
+    "documents"
+  ]
+}

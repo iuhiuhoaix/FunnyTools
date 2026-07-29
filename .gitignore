@@ -1,0 +1,5 @@
+node_modules/
+*.html
+!skills/md-to-html/assets/themes/*.html
+.DS_Store
+Thumbs.db
