@@ -15,6 +15,7 @@ function parseArgs(argv) {
     stdin: false,
     listThemes: false,
     help: false,
+    cdn: false,
   };
   for (let i = 0; i < argv.length; i++) {
     switch (argv[i]) {
@@ -25,6 +26,7 @@ function parseArgs(argv) {
       case '--stdin': args.stdin = true; break;
       case '--list-themes': args.listThemes = true; break;
       case '--help': case '-h': args.help = true; break;
+      case '--cdn': args.cdn = true; break;
       default:
         if (!args.input && !argv[i].startsWith('-')) args.input = argv[i];
     }
@@ -41,6 +43,7 @@ Options:
   --output, -o <file>   Output HTML file (default: <input>.html)
   --title <title>       Page title (default: extracted from first H1)
   --stdin               Read markdown from stdin
+  --cdn                 Use CDN for Prism.js and mermaid.js (for sharing)
   --list-themes         List available built-in themes
   --help, -h            Show this help`);
 }
@@ -579,7 +582,23 @@ function main() {
   const title = args.title || extractTitle(md, args.input);
 
   // Load and apply theme
-  const themeHtml = loadTheme(args.theme, scriptDir);
+  let themeHtml = loadTheme(args.theme, scriptDir);
+
+  // Replace local vendor paths with CDN if --cdn flag is used
+  if (args.cdn) {
+    themeHtml = themeHtml
+      .replace(/\.\.\/vendor\/prism\/prism-tomorrow\.min\.css/g, 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css')
+      .replace(/\.\.\/vendor\/prism\/prism\.min\.js/g, 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/prism.min.js')
+      .replace(/\.\.\/vendor\/prism\/prism-javascript\.min\.js/g, 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/components/prism-javascript.min.js')
+      .replace(/\.\.\/vendor\/prism\/prism-python\.min\.js/g, 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/components/prism-python.min.js')
+      .replace(/\.\.\/vendor\/prism\/prism-sql\.min\.js/g, 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/components/prism-sql.min.js')
+      .replace(/\.\.\/vendor\/prism\/prism-css\.min\.js/g, 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/components/prism-css.min.js')
+      .replace(/\.\.\/vendor\/prism\/prism-markup\.min\.js/g, 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/components/prism-markup.min.js')
+      .replace(/\.\.\/vendor\/prism\/prism-json\.min\.js/g, 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/components/prism-json.min.js')
+      .replace(/\.\.\/vendor\/prism\/prism-bash\.min\.js/g, 'https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/components/prism-bash.min.js')
+      .replace(/\.\.\/vendor\/mermaid\/mermaid\.min\.js/g, 'https://cdn.bootcdn.net/ajax/libs/mermaid/10.0.0/mermaid.min.js');
+  }
+
   const output = themeHtml
     .replace(/\{\{content\}\}/g, bodyHtml)
     .replace(/\{\{title\}\}/g, escapeHtml(title));
